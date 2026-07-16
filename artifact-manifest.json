@@ -40,12 +40,12 @@
     "Russell-Dudek-Accenture-Contribution-Case.pdf": 2
   },
   "pdf_sha256": {
-    "Russell-Dudek-Accenture-Resume.pdf": "f3afb5c7119acab9020ff4c7f665d59d08a7cb0ebf26de030675e4a3cbde5b96",
-    "Russell-Dudek-Accenture-Cover-Letter.pdf": "75ac00d2a88398fbdaa205c87d09ce1a837a068307b54cb93b32bd0366ba1823",
-    "Russell-Dudek-Accenture-Interview-Brief.pdf": "51f3560769344cde9b97e7064c4010da08cb794fb57fbfd875b88fcbe1abce41",
-    "Russell-Dudek-Accenture-90-Day-Plan.pdf": "1f744b2feda56957fbcd71c1aa11397a58020481b99697d9eb7c53d82a3c5a2a",
-    "Russell-Dudek-Agent-Load-Path-Review.pdf": "4a2cd5483ce28a133db5bb027f34e892248cd7fde192ed613b88272fc06a2656",
-    "Russell-Dudek-Accenture-Contribution-Case.pdf": "15d2d103713fbb7d2da76ecca6b9877e5fbce2be84634ee37a500acc3643fba7"
+    "Russell-Dudek-Accenture-Resume.pdf": "b1b71b5ff969a2a3c2ff52d144e7270a2b5013b674e92545399895851a630baa",
+    "Russell-Dudek-Accenture-Cover-Letter.pdf": "1eff1aa7cbac565708447153cd3ee4f7bce5106224c6692f5648583b14c0a0c1",
+    "Russell-Dudek-Accenture-Interview-Brief.pdf": "61a1506dc14d744aaadaea35f84a4f035fd3cb09cdba0e6f55da2688aa94902f",
+    "Russell-Dudek-Accenture-90-Day-Plan.pdf": "791ee6c4f7c9e5bb680c4880b944f008dd008dfec4f3ca034d97b1ae590d5123",
+    "Russell-Dudek-Agent-Load-Path-Review.pdf": "8eb9e6c4890875d006284b81a85bc4d64c682c9197745e7763ff455e3399844a",
+    "Russell-Dudek-Accenture-Contribution-Case.pdf": "7134d4df92c44353e50fb8494f7f42b3e9d32f981e3c0317192cce656ad622e6"
   },
   "publication_workflow": ".github/workflows/publish.yml",
   "pdf_build_script": "scripts/build_pdfs.py"

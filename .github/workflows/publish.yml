@@ -145,10 +145,10 @@ jobs:
                       await context.close()
 
                   context=await browser.new_context(viewport=viewports['desktop']); page=await context.new_page(); await page.goto(base,wait_until='domcontentloaded',timeout=45000)
-                  await page.get_by_role('button',name='Finance exception triage').click(); finance=(await page.locator('.posture-value').inner_text()).strip(); finance_hold=await page.locator('.pier[data-state="hold"]').count()
+                  await page.get_by_role('button',name='Finance exception triage').click(); finance=(await page.locator('.posture-value').inner_text()).strip(); finance_hold=await page.locator('.contract-state[data-state="hold"]').count()
                   await page.get_by_role('button',name='Healthcare intake').click(); health=(await page.locator('.posture-value').inner_text()).strip()
                   await page.get_by_role('button',name='Retail inventory exception').focus(); await page.keyboard.press('Enter'); retail=(await page.locator('.posture-value').inner_text()).strip()
-                  interaction['scenario_flow']={'finance':finance,'finance_hold_piers':finance_hold,'healthcare':health,'retail_keyboard':retail,'passed':finance=='HOLD FOR AUTHORITY DESIGN' and finance_hold>=1 and health=='HUMAN-FIRST WITH AUDIT TRACE' and retail=='SHADOW + HUMAN APPROVAL'}
+                  interaction['scenario_flow']={'finance':finance,'finance_hold_contracts':finance_hold,'healthcare':health,'retail_keyboard':retail,'passed':finance=='HOLD FOR AUTHORITY DESIGN' and finance_hold>=1 and health=='HUMAN-FIRST WITH AUDIT TRACE' and retail=='SHADOW + HUMAN APPROVAL'}
                   await page.close(); await context.close()
 
                   context=await browser.new_context(viewport=viewports['mobile']); page=await context.new_page(); await page.goto(base,wait_until='domcontentloaded',timeout=45000); await page.get_by_role('button',name='Menu').click()
@@ -156,7 +156,7 @@ jobs:
                   await page.close(); await context.close()
 
                   context=await browser.new_context(viewport=viewports['desktop'],reduced_motion='reduce'); page=await context.new_page(); await page.goto(base,wait_until='domcontentloaded',timeout=45000)
-                  animation=await page.locator('.load-pulse').evaluate('(el)=>getComputedStyle(el).animationName'); interaction['reduced_motion']={'animation_name':animation,'passed':animation=='none'}
+                  animation=await page.locator('.crossing-plane').first.evaluate('(el)=>getComputedStyle(el).animationName'); replay=await page.locator('[data-crossing-replay]').evaluate('(el)=>getComputedStyle(el).display'); interaction['reduced_motion']={'animation_name':animation,'replay_display':replay,'passed':animation=='none' and replay=='none'}
                   await page.close(); await context.close()
 
                   context=await browser.new_context(viewport=viewports['desktop']); page=await context.new_page()

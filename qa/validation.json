@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "checked_at": "2026-07-16",
+  "checks": [
+    "candidate-facing confidentiality",
+    "local internal-link resolution",
+    "exact resume and cover-letter pagination",
+    "supporting PDF pagination",
+    "source/PDF consistency through scripts/build_pdfs.py",
+    "PDF metadata scan",
+    "reduced-motion CSS present",
+    "official employer identity asset committed"
+  ],
+  "pdf_page_counts": {
+    "Russell-Dudek-Accenture-Resume.pdf": 2,
+    "Russell-Dudek-Accenture-Cover-Letter.pdf": 1,
+    "Russell-Dudek-Accenture-Interview-Brief.pdf": 4,
+    "Russell-Dudek-Accenture-90-Day-Plan.pdf": 3,
+    "Russell-Dudek-Agent-Load-Path-Review.pdf": 2,
+    "Russell-Dudek-Accenture-Contribution-Case.pdf": 2
+  },
+  "known_environment_limit": "Managed Chromium blocked localhost/file navigation; public-route browser validation must occur after Pages deployment."
+}

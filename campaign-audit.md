@@ -1,6 +1,6 @@
 # Campaign audit
 
-Status at source build: publication-ready; live-route verification pending.
+Status: published and live-route verified; full live browser matrix pending.
 
 ## Passed
 - Candidate claims map to verified evidence; no invented metrics, titles, deployments, customers, ownership or platform tenure.
@@ -16,11 +16,13 @@ Status at source build: publication-ready; live-route verification pending.
 - Every printable route exposes a direct PDF download.
 - Source links resolve locally; candidate-facing confidentiality and public-repository-link scans return zero matches.
 - The complete artifact manifest is present.
+- GitHub Pages configuration and deployment succeeded.
+- Seven live HTML routes returned HTTP 200 with valid HTML signatures.
+- Six live document routes returned HTTP 200 with valid PDF signatures.
 
-## Pending after publication
-- Live GitHub Pages HTTP status and byte verification.
-- Desktop, laptop, tablet, mobile and 320px live-route screenshots.
+## Remaining browser gate
+- Desktop, laptop, tablet, mobile and 320px live-route screenshot matrix.
 - Live scenario interaction, keyboard behavior and reduced-motion verification.
-- Official-page literal screenshot comparison.
+- Literal current Accenture-page screenshot reference.
 
-The managed local browser blocks navigation to localhost and file URLs, so no local Chromium success is claimed.
+The managed local browser blocks navigation to localhost and file URLs. Live HTTP and document verification is independently recorded in `qa/publication-audit.json`; no browser-render claim is made until `qa/browser-audit.json` is present and passed.

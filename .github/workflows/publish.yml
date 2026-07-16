@@ -63,7 +63,6 @@ jobs:
           import json, os, time
           from pathlib import Path
           from urllib.request import Request, urlopen
-          from urllib.error import URLError, HTTPError
 
           root = Path('.')
           page_outcome = os.environ.get('PAGES_OUTCOME', 'unknown')
@@ -83,7 +82,7 @@ jobs:
           if deploy_outcome == 'success' and site_url.startswith('http'):
               for attempt in range(18):
                   try:
-                      with urlopen(Request(site_url, headers={'User-Agent':'RoleForge publication audit'}), timeout=20) as r:
+                      with urlopen(Request(site_url, headers={'User-Agent':'Candidate campaign publication audit'}), timeout=20) as r:
                           if r.status == 200:
                               break
                   except Exception:
@@ -93,7 +92,7 @@ jobs:
               for route in routes:
                   url = site_url + route
                   try:
-                      with urlopen(Request(url, headers={'User-Agent':'RoleForge publication audit'}), timeout=25) as r:
+                      with urlopen(Request(url, headers={'User-Agent':'Candidate campaign publication audit'}), timeout=25) as r:
                           body = r.read()
                           is_pdf = route.endswith('.pdf')
                           results.append({
@@ -119,12 +118,130 @@ jobs:
           (root/'qa'/'publication-audit.json').write_text(json.dumps(audit, indent=2) + '\n')
           print(json.dumps(audit, indent=2))
           PY
-      - name: Commit publication audit
+      - name: Install live browser
+        if: steps.deployment.outcome == 'success'
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Run responsive and interaction audit
+        if: steps.deployment.outcome == 'success'
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import asyncio, json, os
+          from pathlib import Path
+          from playwright.async_api import async_playwright
+
+          base = os.environ['SITE_URL'].rstrip('/') + '/'
+          routes = ['', 'resume.html', 'cover-letter.html', 'interview-brief.html', '90-day-plan.html', 'agent-load-path-review.html', 'contribution-case.html']
+          viewports = {
+              'desktop': {'width': 1440, 'height': 900},
+              'laptop': {'width': 1280, 'height': 800},
+              'tablet': {'width': 768, 'height': 1024},
+              'mobile': {'width': 390, 'height': 844},
+              'narrow': {'width': 320, 'height': 800},
+          }
+          out = Path('qa')
+          shots = out / 'screenshots'
+          shots.mkdir(parents=True, exist_ok=True)
+
+          async def main():
+              findings = []
+              renders = []
+              interaction = {}
+              official = {}
+              async with async_playwright() as p:
+                  browser = await p.chromium.launch()
+                  for viewport_name, viewport in viewports.items():
+                      context = await browser.new_context(viewport=viewport)
+                      for route in routes:
+                          page = await context.new_page()
+                          console_errors = []
+                          page.on('console', lambda msg, bucket=console_errors: bucket.append(msg.text) if msg.type == 'error' else None)
+                          response = await page.goto(base + route, wait_until='networkidle', timeout=60000)
+                          title = await page.title()
+                          body_text = (await page.locator('body').inner_text()).strip()
+                          geometry = await page.evaluate('''() => ({scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth, scrollHeight: document.documentElement.scrollHeight, clientHeight: document.documentElement.clientHeight})''')
+                          broken_images = await page.locator('img').evaluate_all('(imgs) => imgs.filter(i => !i.complete || i.naturalWidth === 0).map(i => i.getAttribute("src"))')
+                          ok = bool(response and response.status == 200 and title and len(body_text) > 120 and geometry['scrollWidth'] <= geometry['clientWidth'] + 1 and not broken_images and not console_errors)
+                          item = {'viewport': viewport_name, 'route': route or 'index.html', 'status': response.status if response else None, 'title': title, 'body_chars': len(body_text), 'geometry': geometry, 'broken_images': broken_images, 'console_errors': console_errors, 'passed': ok}
+                          renders.append(item)
+                          if not ok:
+                              findings.append(item)
+                          if route == '' and viewport_name in ('desktop','mobile','narrow'):
+                              await page.screenshot(path=str(shots / f'campaign-{viewport_name}.jpg'), type='jpeg', quality=62, full_page=False)
+                          await page.close()
+                      await context.close()
+
+                  context = await browser.new_context(viewport=viewports['desktop'])
+                  page = await context.new_page()
+                  await page.goto(base, wait_until='networkidle', timeout=60000)
+                  await page.get_by_role('button', name='Finance exception triage').click()
+                  finance = (await page.locator('.posture-value').inner_text()).strip()
+                  finance_hold = await page.locator('.pier[data-state="hold"]').count()
+                  await page.get_by_role('button', name='Healthcare intake').click()
+                  health = (await page.locator('.posture-value').inner_text()).strip()
+                  await page.get_by_role('button', name='Retail inventory exception').focus()
+                  await page.keyboard.press('Enter')
+                  retail = (await page.locator('.posture-value').inner_text()).strip()
+                  interaction['scenario_flow'] = {'finance': finance, 'finance_hold_piers': finance_hold, 'healthcare': health, 'retail_keyboard': retail, 'passed': finance == 'HOLD FOR AUTHORITY DESIGN' and finance_hold >= 1 and health == 'HUMAN-FIRST WITH AUDIT TRACE' and retail == 'SHADOW + HUMAN APPROVAL'}
+                  await page.close(); await context.close()
+
+                  context = await browser.new_context(viewport=viewports['mobile'])
+                  page = await context.new_page()
+                  await page.goto(base, wait_until='networkidle', timeout=60000)
+                  await page.get_by_role('button', name='Menu').click()
+                  menu_open = await page.locator('.nav-links.open').count() == 1
+                  nav_visible = await page.get_by_role('link', name='Operating model').is_visible()
+                  interaction['mobile_menu'] = {'open_class': menu_open, 'nav_visible': nav_visible, 'passed': menu_open and nav_visible}
+                  await page.close(); await context.close()
+
+                  context = await browser.new_context(viewport=viewports['desktop'], reduced_motion='reduce')
+                  page = await context.new_page()
+                  await page.goto(base, wait_until='networkidle', timeout=60000)
+                  animation_name = await page.locator('.load-pulse').evaluate('(el) => getComputedStyle(el).animationName')
+                  interaction['reduced_motion'] = {'animation_name': animation_name, 'passed': animation_name == 'none'}
+                  await page.close(); await context.close()
+
+                  context = await browser.new_context(viewport=viewports['desktop'])
+                  page = await context.new_page()
+                  try:
+                      response = await page.goto('https://www.accenture.com/us-en/about/company-index', wait_until='domcontentloaded', timeout=90000)
+                      await page.wait_for_timeout(4000)
+                      await page.screenshot(path=str(shots / 'accenture-official-reference.jpg'), type='jpeg', quality=58, full_page=False)
+                      official = {'url': page.url, 'status': response.status if response else None, 'title': await page.title(), 'body_chars': len((await page.locator('body').inner_text()).strip()), 'screenshot': 'qa/screenshots/accenture-official-reference.jpg'}
+                      official['passed'] = official['status'] == 200 and 'accenture' in official['title'].lower() and official['body_chars'] > 500
+                  except Exception as exc:
+                      official = {'passed': False, 'error': type(exc).__name__ + ': ' + str(exc)}
+                  await page.close(); await context.close()
+                  await browser.close()
+
+              interactions_passed = all(v.get('passed') for v in interaction.values())
+              report = {
+                  'checked_at': '2026-07-16',
+                  'browser_path': 'GitHub-hosted Playwright Chromium; in-app Browser plugin was not available',
+                  'site_url': base,
+                  'viewports': viewports,
+                  'render_checks': len(renders),
+                  'render_passes': sum(1 for r in renders if r['passed']),
+                  'findings': findings,
+                  'interaction': interaction,
+                  'official_reference': official,
+                  'screenshots': ['qa/screenshots/campaign-desktop.jpg','qa/screenshots/campaign-mobile.jpg','qa/screenshots/campaign-narrow.jpg','qa/screenshots/accenture-official-reference.jpg'],
+                  'status': 'passed' if len(findings) == 0 and interactions_passed and official.get('passed') else 'failed'
+              }
+              (out/'browser-audit.json').write_text(json.dumps(report, indent=2) + '\n')
+              print(json.dumps(report, indent=2))
+
+          asyncio.run(main())
+          PY
+      - name: Commit publication and browser audit
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase
-          git add qa/publication-audit.json docs/*.pdf artifact-manifest.json qa/validation.json
-          git diff --cached --quiet || git commit -m "Record campaign publication audit"
+          git add qa/publication-audit.json qa/browser-audit.json qa/screenshots docs/*.pdf artifact-manifest.json qa/validation.json
+          git diff --cached --quiet || git commit -m "Record live campaign QA"
           git push

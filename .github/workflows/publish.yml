@@ -39,9 +39,92 @@ jobs:
           git add docs/*.pdf artifact-manifest.json qa/validation.json
           git diff --cached --quiet || git commit -m "Build verified campaign PDFs"
           git push
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - id: pages
+        name: Configure GitHub Pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+      - name: Upload GitHub Pages artifact
+        continue-on-error: true
+        uses: actions/upload-pages-artifact@v3
         with:
           path: .
       - id: deployment
+        name: Deploy GitHub Pages
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+      - name: Audit publication outcome
+        if: always()
+        env:
+          PAGES_OUTCOME: ${{ steps.pages.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deployment.outcome }}
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.error import URLError, HTTPError
+
+          root = Path('.')
+          page_outcome = os.environ.get('PAGES_OUTCOME', 'unknown')
+          deploy_outcome = os.environ.get('DEPLOY_OUTCOME', 'unknown')
+          site_url = os.environ.get('SITE_URL', '').rstrip('/') + '/'
+          routes = [
+              '', 'resume.html', 'cover-letter.html', 'interview-brief.html',
+              '90-day-plan.html', 'agent-load-path-review.html', 'contribution-case.html',
+              'docs/Russell-Dudek-Accenture-Resume.pdf',
+              'docs/Russell-Dudek-Accenture-Cover-Letter.pdf',
+              'docs/Russell-Dudek-Accenture-Interview-Brief.pdf',
+              'docs/Russell-Dudek-Accenture-90-Day-Plan.pdf',
+              'docs/Russell-Dudek-Agent-Load-Path-Review.pdf',
+              'docs/Russell-Dudek-Accenture-Contribution-Case.pdf',
+          ]
+          results = []
+          if deploy_outcome == 'success' and site_url.startswith('http'):
+              for attempt in range(18):
+                  try:
+                      with urlopen(Request(site_url, headers={'User-Agent':'RoleForge publication audit'}), timeout=20) as r:
+                          if r.status == 200:
+                              break
+                  except Exception:
+                      if attempt == 17:
+                          break
+                      time.sleep(5)
+              for route in routes:
+                  url = site_url + route
+                  try:
+                      with urlopen(Request(url, headers={'User-Agent':'RoleForge publication audit'}), timeout=25) as r:
+                          body = r.read()
+                          is_pdf = route.endswith('.pdf')
+                          results.append({
+                              'route': route or 'index.html',
+                              'status': r.status,
+                              'bytes': len(body),
+                              'content_type': r.headers.get_content_type(),
+                              'signature_ok': (body.startswith(b'%PDF') if is_pdf else b'<html' in body[:500].lower() or b'<!doctype html' in body[:500].lower()),
+                          })
+                  except Exception as exc:
+                      results.append({'route': route or 'index.html', 'error': type(exc).__name__ + ': ' + str(exc)})
+          passed = bool(results) and all(r.get('status') == 200 and r.get('signature_ok') for r in results)
+          audit = {
+              'checked_at': '2026-07-16',
+              'configure_pages_outcome': page_outcome,
+              'deploy_pages_outcome': deploy_outcome,
+              'site_url': site_url if site_url.startswith('http') else None,
+              'live_route_status': 'passed' if passed else 'blocked',
+              'routes': results,
+              'note': None if passed else 'Pages may require repository Settings > Pages > Source: GitHub Actions before a live route can be verified.'
+          }
+          (root/'qa').mkdir(exist_ok=True)
+          (root/'qa'/'publication-audit.json').write_text(json.dumps(audit, indent=2) + '\n')
+          print(json.dumps(audit, indent=2))
+          PY
+      - name: Commit publication audit
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase
+          git add qa/publication-audit.json docs/*.pdf artifact-manifest.json qa/validation.json
+          git diff --cached --quiet || git commit -m "Record campaign publication audit"
+          git push

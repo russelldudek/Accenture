@@ -1,0 +1,14 @@
+:root {
+  --acn-purple: #A100FF; /* source-sampled from current Accenture identity */
+  --acn-chevron: #BD00FF; /* source-sampled from mirrored wordmark */
+  --acn-deep: #25003A; /* source-sampled/campaign dark field */
+  --acn-violet: #460073; /* source-informed supporting violet */
+  --acn-mist: #F5EEFF; /* source-informed light field */
+  --ink: #15121B;
+  --muted: #655F6B;
+  --paper: #FFFFFF;
+  --line: #D9D1DE;
+  --signal-ready: #31D1A4; /* candidate-original deployment signal */
+  --signal-watch: #FFCF5A; /* candidate-original caution signal */
+  --signal-hold: #FF6B7A; /* candidate-original hold signal */
+}

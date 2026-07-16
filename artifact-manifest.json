@@ -1,0 +1,52 @@
+{
+  "campaign": "Accenture - AI Cloud Native Forward Deployed Senior Manager / Associate Director",
+  "job_url": "https://www.accenture.com/us-en/careers/jobdetails?id=R00325556_en&src=LINKEDINJP",
+  "candidate_vision_url": "https://russelldudek.github.io/Accenture/",
+  "routes": [
+    "index.html",
+    "resume.html",
+    "cover-letter.html",
+    "interview-brief.html",
+    "90-day-plan.html",
+    "agent-load-path-review.html",
+    "contribution-case.html"
+  ],
+  "assets": [
+    "styles.css",
+    "brand-tokens.css",
+    "app.js",
+    "assets/brand/accenture-wordmark.svg"
+  ],
+  "documents": [
+    "Russell-Dudek-Accenture-90-Day-Plan.pdf",
+    "Russell-Dudek-Accenture-Contribution-Case.pdf",
+    "Russell-Dudek-Accenture-Cover-Letter.pdf",
+    "Russell-Dudek-Accenture-Interview-Brief.pdf",
+    "Russell-Dudek-Accenture-Resume.pdf",
+    "Russell-Dudek-Agent-Load-Path-Review.pdf"
+  ],
+  "records": [
+    "brand-intelligence.md",
+    "sources.md",
+    "campaign-audit.md",
+    "README.md"
+  ],
+  "pdf_page_counts": {
+    "Russell-Dudek-Accenture-Resume.pdf": 2,
+    "Russell-Dudek-Accenture-Cover-Letter.pdf": 1,
+    "Russell-Dudek-Accenture-Interview-Brief.pdf": 4,
+    "Russell-Dudek-Accenture-90-Day-Plan.pdf": 3,
+    "Russell-Dudek-Agent-Load-Path-Review.pdf": 2,
+    "Russell-Dudek-Accenture-Contribution-Case.pdf": 2
+  },
+  "pdf_sha256": {
+    "Russell-Dudek-Accenture-Resume.pdf": "bcb51bd6deb8d922daa48d8af87a12840542baf51e0ea2c17ffda6d2606f8d09",
+    "Russell-Dudek-Accenture-Cover-Letter.pdf": "840729f9eea8365ee4618115e619100b62d50ef64c60fb8be4d6a6ca676f69ee",
+    "Russell-Dudek-Accenture-Interview-Brief.pdf": "4e03e0c6a0a7a5be6b449308d6fb0a4a930263d9980212b85fb813aa4bd42c90",
+    "Russell-Dudek-Accenture-90-Day-Plan.pdf": "522e6b4bddbade08a7dd508912eb86d8090e1406b19b861674ebd212e943ce86",
+    "Russell-Dudek-Agent-Load-Path-Review.pdf": "5a2a1622ea981abcd6a1847ed9fc3f0674b380724a07693dc6b4eda36d33a54f",
+    "Russell-Dudek-Accenture-Contribution-Case.pdf": "b594bdafddf0d137bac4d1b0994889579c0cac43bf836b70f48054d26d072a25"
+  },
+  "publication_workflow": ".github/workflows/publish.yml",
+  "pdf_build_script": "scripts/build_pdfs.py"
+}

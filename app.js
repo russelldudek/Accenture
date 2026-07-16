@@ -88,40 +88,16 @@ menuButton?.addEventListener('click', () => {
   menuButton.setAttribute('aria-expanded', String(open));
 });
 
-const artifactDownloads = [
-  {
-    label: 'Role-aligned resume',
-    href: 'docs/Russell-Dudek-Accenture-Resume.pdf',
-    filename: 'Russell-Dudek-Accenture-Resume.pdf'
-  },
-  {
-    label: 'Cover letter',
-    href: 'docs/Russell-Dudek-Accenture-Cover-Letter.pdf',
-    filename: 'Russell-Dudek-Accenture-Cover-Letter.pdf'
-  },
-  {
-    label: 'Interview thesis brief',
-    href: 'docs/Russell-Dudek-Accenture-Interview-Brief.pdf',
-    filename: 'Russell-Dudek-Accenture-Interview-Brief.pdf'
-  },
-  {
-    label: '90-day entry plan',
-    href: 'docs/Russell-Dudek-Accenture-90-Day-Plan.pdf',
-    filename: 'Russell-Dudek-Accenture-90-Day-Plan.pdf'
-  },
-  {
-    label: 'Agent Load Path Review',
-    href: 'docs/Russell-Dudek-Agent-Load-Path-Review.pdf',
-    filename: 'Russell-Dudek-Agent-Load-Path-Review.pdf'
-  },
-  {
-    label: 'Immediate contribution case',
-    href: 'docs/Russell-Dudek-Accenture-Contribution-Case.pdf',
-    filename: 'Russell-Dudek-Accenture-Contribution-Case.pdf'
-  }
+const artifactViews = [
+  { label: 'Role-aligned resume', href: 'resume.html' },
+  { label: 'Cover letter', href: 'cover-letter.html' },
+  { label: 'Interview thesis brief', href: 'interview-brief.html' },
+  { label: '90-day entry plan', href: '90-day-plan.html' },
+  { label: 'Agent Load Path Review', href: 'agent-load-path-review.html' },
+  { label: 'Immediate contribution case', href: 'contribution-case.html' }
 ];
 
-function enableArtifactDownloads() {
+function enhanceArtifactRail() {
   if (!document.querySelector('link[href="artifact-downloads.css"]')) {
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
@@ -131,24 +107,24 @@ function enableArtifactDownloads() {
 
   const rail = document.querySelector('.cta-links');
   if (!rail) return;
-  rail.setAttribute('aria-label', 'Download campaign documents');
+  rail.setAttribute('aria-label', 'Open campaign documents');
 
   const links = [...rail.querySelectorAll('a')];
-  artifactDownloads.forEach((artifact, index) => {
+  artifactViews.forEach((artifact, index) => {
     const link = links[index];
     if (!link) return;
 
-    link.className = 'artifact-download';
+    link.className = 'artifact-link';
     link.href = artifact.href;
-    link.setAttribute('download', artifact.filename);
-    link.setAttribute('aria-label', `Download ${artifact.label} PDF`);
+    link.removeAttribute('download');
+    link.setAttribute('aria-label', `Open ${artifact.label} HTML view`);
     link.innerHTML = `
       <span class="artifact-number">${String(index + 1).padStart(2, '0')}</span>
-      <span class="artifact-copy"><strong>${artifact.label}</strong><small>PDF · Direct download</small></span>
+      <span class="artifact-copy"><strong>${artifact.label}</strong><small>Open document · PDF download inside</small></span>
       <span class="artifact-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"/></svg>
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
       </span>`;
   });
 }
 
-enableArtifactDownloads();
+enhanceArtifactRail();

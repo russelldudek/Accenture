@@ -87,3 +87,68 @@ menuButton?.addEventListener('click', () => {
   const open = navLinks.classList.toggle('open');
   menuButton.setAttribute('aria-expanded', String(open));
 });
+
+const artifactDownloads = [
+  {
+    label: 'Role-aligned resume',
+    href: 'docs/Russell-Dudek-Accenture-Resume.pdf',
+    filename: 'Russell-Dudek-Accenture-Resume.pdf'
+  },
+  {
+    label: 'Cover letter',
+    href: 'docs/Russell-Dudek-Accenture-Cover-Letter.pdf',
+    filename: 'Russell-Dudek-Accenture-Cover-Letter.pdf'
+  },
+  {
+    label: 'Interview thesis brief',
+    href: 'docs/Russell-Dudek-Accenture-Interview-Brief.pdf',
+    filename: 'Russell-Dudek-Accenture-Interview-Brief.pdf'
+  },
+  {
+    label: '90-day entry plan',
+    href: 'docs/Russell-Dudek-Accenture-90-Day-Plan.pdf',
+    filename: 'Russell-Dudek-Accenture-90-Day-Plan.pdf'
+  },
+  {
+    label: 'Agent Load Path Review',
+    href: 'docs/Russell-Dudek-Agent-Load-Path-Review.pdf',
+    filename: 'Russell-Dudek-Agent-Load-Path-Review.pdf'
+  },
+  {
+    label: 'Immediate contribution case',
+    href: 'docs/Russell-Dudek-Accenture-Contribution-Case.pdf',
+    filename: 'Russell-Dudek-Accenture-Contribution-Case.pdf'
+  }
+];
+
+function enableArtifactDownloads() {
+  if (!document.querySelector('link[href="artifact-downloads.css"]')) {
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'artifact-downloads.css';
+    document.head.appendChild(stylesheet);
+  }
+
+  const rail = document.querySelector('.cta-links');
+  if (!rail) return;
+  rail.setAttribute('aria-label', 'Download campaign documents');
+
+  const links = [...rail.querySelectorAll('a')];
+  artifactDownloads.forEach((artifact, index) => {
+    const link = links[index];
+    if (!link) return;
+
+    link.className = 'artifact-download';
+    link.href = artifact.href;
+    link.setAttribute('download', artifact.filename);
+    link.setAttribute('aria-label', `Download ${artifact.label} PDF`);
+    link.innerHTML = `
+      <span class="artifact-number">${String(index + 1).padStart(2, '0')}</span>
+      <span class="artifact-copy"><strong>${artifact.label}</strong><small>PDF · Direct download</small></span>
+      <span class="artifact-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"/></svg>
+      </span>`;
+  });
+}
+
+enableArtifactDownloads();

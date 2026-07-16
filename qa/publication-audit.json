@@ -1,0 +1,101 @@
+{
+  "checked_at": "2026-07-16",
+  "configure_pages_outcome": "success",
+  "deploy_pages_outcome": "success",
+  "site_url": "https://russelldudek.github.io/Accenture/",
+  "live_route_status": "passed",
+  "routes": [
+    {
+      "route": "index.html",
+      "status": 200,
+      "bytes": 15963,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "resume.html",
+      "status": 200,
+      "bytes": 7368,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "cover-letter.html",
+      "status": 200,
+      "bytes": 4435,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "interview-brief.html",
+      "status": 200,
+      "bytes": 7825,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "90-day-plan.html",
+      "status": 200,
+      "bytes": 5975,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "agent-load-path-review.html",
+      "status": 200,
+      "bytes": 5471,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "contribution-case.html",
+      "status": 200,
+      "bytes": 4676,
+      "content_type": "text/html",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Accenture-Resume.pdf",
+      "status": 200,
+      "bytes": 18451,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Accenture-Cover-Letter.pdf",
+      "status": 200,
+      "bytes": 12241,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Accenture-Interview-Brief.pdf",
+      "status": 200,
+      "bytes": 20884,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Accenture-90-Day-Plan.pdf",
+      "status": 200,
+      "bytes": 17608,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Agent-Load-Path-Review.pdf",
+      "status": 200,
+      "bytes": 15848,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    },
+    {
+      "route": "docs/Russell-Dudek-Accenture-Contribution-Case.pdf",
+      "status": 200,
+      "bytes": 15679,
+      "content_type": "application/pdf",
+      "signature_ok": true
+    }
+  ],
+  "note": null
+}
